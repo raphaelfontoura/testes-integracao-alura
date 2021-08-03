@@ -67,5 +67,5 @@ class UsuarioDaoTest {
 
         assertThrows(NoResultException.class, () -> dao.buscarPorUsername(usuario.getNome()));
     }
-    
+
 }
