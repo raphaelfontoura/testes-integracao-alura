@@ -5,6 +5,8 @@ import br.com.alura.leilao.model.Usuario;
 import br.com.alura.leilao.util.JPAUtil;
 import br.com.alura.leilao.util.builders.LeilaoBuilder;
 import br.com.alura.leilao.util.builders.UsuarioBuilder;
+import br.com.alura.leilao.util.fabrics.LeilaoFabric;
+import br.com.alura.leilao.util.fabrics.UsuarioFabric;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,18 +40,9 @@ class LeilaoDaoTest {
 
     @Test
     void salvar_deveriaCadastrarLeilao() {
-        Usuario usuario = new UsuarioBuilder()
-                .comNome("Fulano")
-                .comEmail("fulano@email.com")
-                .comSenha("1234")
-                .criar();
+        Usuario usuario = UsuarioFabric.novoUsuario();
         em.persist(usuario);
-        Leilao leilao = new LeilaoBuilder()
-                .comNome("Mochila")
-                .comValorInicial("70")
-                .comUsuario(usuario)
-                .comData(LocalDate.now())
-                .criar();
+        Leilao leilao = LeilaoFabric.leilaoDataAtual(usuario);
 
         leilao = dao.salvar(leilao);
 
@@ -60,18 +53,9 @@ class LeilaoDaoTest {
 
     @Test
     void salvar_deveriaAtualizarLeilaoAlterado() {
-        Usuario usuario = new UsuarioBuilder()
-                .comNome("Fulano")
-                .comEmail("fulano@email.com")
-                .comSenha("1234")
-                .criar();
+        Usuario usuario = UsuarioFabric.novoUsuario();
         em.persist(usuario);
-        Leilao leilao = new LeilaoBuilder()
-                .comNome("Mochila")
-                .comValorInicial("70")
-                .comUsuario(usuario)
-                .comData(LocalDate.now())
-                .criar();
+        Leilao leilao = LeilaoFabric.leilaoDataAtual(usuario);
 
         leilao.setNome("celular");
         leilao.setValorInicial(new BigDecimal("400"));
@@ -85,18 +69,9 @@ class LeilaoDaoTest {
 
     @Test
     void buscarTodos_deveriaRetornarUmaListLeilao() {
-        Usuario usuario = new UsuarioBuilder()
-                .comNome("Fulano")
-                .comEmail("fulano@email.com")
-                .comSenha("1234")
-                .criar();
+        Usuario usuario = UsuarioFabric.novoUsuario();
         em.persist(usuario);
-        Leilao leilao = new LeilaoBuilder()
-                .comNome("Mochila")
-                .comValorInicial("70")
-                .comUsuario(usuario)
-                .comData(LocalDate.now())
-                .criar();
+        Leilao leilao = LeilaoFabric.leilaoDataAtual(usuario);
         em.persist(leilao);
         Leilao leilao2 = new LeilaoBuilder()
                 .comNome("Caderno")
@@ -123,11 +98,7 @@ class LeilaoDaoTest {
 
     @Test
     void buscarLeiloesDoPeriodo_deveriaRetornarApenasLeiloesDoPeriodoIformado() {
-        Usuario usuario = new UsuarioBuilder()
-                .comNome("Fulano")
-                .comEmail("fulano@email.com")
-                .comSenha("1234")
-                .criar();
+        Usuario usuario = UsuarioFabric.novoUsuario();
         em.persist(usuario);
         LocalDate primeiraData = LocalDate.of(2021, 1, 1);
         LocalDate segundaData = LocalDate.of(2021, 12, 1);
@@ -154,11 +125,7 @@ class LeilaoDaoTest {
 
     @Test
     void buscarLeiloesDoPeriodo_deveriaRetornarListaVazia_QuandoNaoExistirLeilaoNoPeriodoIformado() {
-        Usuario usuario = new UsuarioBuilder()
-                .comNome("Fulano")
-                .comEmail("fulano@email.com")
-                .comSenha("1234")
-                .criar();
+        Usuario usuario = UsuarioFabric.novoUsuario();
         em.persist(usuario);
         LocalDate primeiraData = LocalDate.of(2021, 1, 1);
         LocalDate segundaData = LocalDate.of(2021, 12, 1);
@@ -186,11 +153,7 @@ class LeilaoDaoTest {
 
     @Test
     void buscarLeiloesDoUsuario_deveriaRetornarListaLeiloesDoUsuarioInformado() {
-        Usuario usuario = new UsuarioBuilder()
-                .comNome("Fulano")
-                .comEmail("fulano@email.com")
-                .comSenha("1234")
-                .criar();
+        Usuario usuario = UsuarioFabric.novoUsuario();
         em.persist(usuario);
         LocalDate primeiraData = LocalDate.of(2021, 1, 1);
         Leilao leilao = new LeilaoBuilder()
@@ -210,11 +173,7 @@ class LeilaoDaoTest {
 
     @Test
     void buscarLeiloesDoUsuario_deveriaRetornarListaVaziaQuandoUsuarioInformadoNaoTiverLeilao() {
-        Usuario usuario = new UsuarioBuilder()
-                .comNome("Fulano")
-                .comEmail("fulano@email.com")
-                .comSenha("1234")
-                .criar();
+        Usuario usuario = UsuarioFabric.novoUsuario();
         em.persist(usuario);
         Usuario usuarioSemLeilao = new UsuarioBuilder()
                 .comNome("Cicrano")
@@ -222,15 +181,8 @@ class LeilaoDaoTest {
                 .comSenha("1234")
                 .criar();
         em.persist(usuarioSemLeilao);
-        LocalDate primeiraData = LocalDate.of(2021, 1, 1);
-        Leilao leilao = new LeilaoBuilder()
-                .comNome("Mochila")
-                .comValorInicial("70")
-                .comUsuario(usuario)
-                .comData(primeiraData)
-                .criar();
+        Leilao leilao = LeilaoFabric.leilaoDataAtual(usuario);
         em.persist(leilao);
-
 
         List<Leilao> leilaos = dao.buscarLeiloesDoUsuario(usuarioSemLeilao);
 

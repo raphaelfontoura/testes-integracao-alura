@@ -6,6 +6,8 @@ import br.com.alura.leilao.model.Usuario;
 import br.com.alura.leilao.util.JPAUtil;
 import br.com.alura.leilao.util.builders.LeilaoBuilder;
 import br.com.alura.leilao.util.builders.UsuarioBuilder;
+import br.com.alura.leilao.util.fabrics.LeilaoFabric;
+import br.com.alura.leilao.util.fabrics.UsuarioFabric;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,18 +38,9 @@ class LanceDaoTest {
 
     @Test
     void buscarMaiorLanceDoLeilao_deveriaRetornarLeilaoComMaiorLance() {
-        Usuario usuario = new UsuarioBuilder()
-                .comNome("fulano")
-                .comEmail("fulano@email.com")
-                .comSenha("123456")
-                .criar();
+        Usuario usuario = UsuarioFabric.novoUsuario();
         em.persist(usuario);
-        Leilao leilao = new LeilaoBuilder()
-                .comNome("mochila")
-                .comData(LocalDate.now())
-                .comValorInicial("50")
-                .comUsuario(usuario)
-                .criar();
+        Leilao leilao = LeilaoFabric.leilaoDataAtual(usuario);
         em.persist(leilao);
 
         Lance lanceMenor = new Lance(usuario, new BigDecimal("60"));

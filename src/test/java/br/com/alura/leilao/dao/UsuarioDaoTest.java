@@ -2,7 +2,7 @@ package br.com.alura.leilao.dao;
 
 import br.com.alura.leilao.model.Usuario;
 import br.com.alura.leilao.util.JPAUtil;
-import br.com.alura.leilao.util.builders.UsuarioBuilder;
+import br.com.alura.leilao.util.fabrics.UsuarioFabric;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,24 +31,16 @@ class UsuarioDaoTest {
 
     @Test
     void buscarPorUsername_deveriaRetornarUsuario_quandoUsuarioCadastrado() {
-        Usuario usuario = new UsuarioBuilder()
-                .comNome("fulano")
-                .comEmail("fulano@email.com")
-                .comSenha("1234")
-                .criar();
+        Usuario usuario = UsuarioFabric.novoUsuario();
         em.persist(usuario);
-        Usuario resultado = dao.buscarPorUsername("fulano");
+        Usuario resultado = dao.buscarPorUsername(usuario.getNome());
         assertNotNull(resultado);
         assertEquals(usuario, resultado);
     }
 
     @Test
     void buscarPorUsername_DeveriaRetornarNoResultException_QuandoUsuarioNaoCadastrado() {
-        Usuario usuario = new UsuarioBuilder()
-                .comNome("fulano")
-                .comEmail("fulano@email.com")
-                .comSenha("1234")
-                .criar();
+        Usuario usuario = UsuarioFabric.novoUsuario();
         em.persist(usuario);
 
         assertThrows(NoResultException.class, () -> dao.buscarPorUsername("beltrano"));
@@ -56,11 +48,7 @@ class UsuarioDaoTest {
 
     @Test
     void deletar_deveriaExcluirUmUsuario() {
-        Usuario usuario = new UsuarioBuilder()
-                .comNome("fulano")
-                .comEmail("fulano@email.com")
-                .comSenha("1234")
-                .criar();
+        Usuario usuario = UsuarioFabric.novoUsuario();
         em.persist(usuario);
 
         dao.deletar(usuario);
